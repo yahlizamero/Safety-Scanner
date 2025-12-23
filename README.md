@@ -12,7 +12,7 @@ This feature demonstrates the integration of the frontend with the backend and c
    - The home page contains a button labeled `Show Random Duck`.
    - When clicked, this button sends a request to the backend to fetch a random rubber duck.
    - The details of the random rubber duck, including its name and image, are displayed on the page.
-2. Backend:
+2. Backend:x
    - The server has an endpoint `/api/rubberDucks/random` that selects a random rubber duck from the database and returns its details in the response.
    - The server contains more endpoints, but without corresponding implementation in the client. These endpoints are to set example of more types of requests.
 
