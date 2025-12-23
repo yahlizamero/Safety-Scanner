@@ -1,0 +1,75 @@
+.chat-screen {
+    background-color: #FFDCE8;
+    height: 100vh; /* גובה מלא של המסך */
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  /* הכותרת העליונה - אפור כהה */
+  .chat-header {
+    background-color: #53474F;
+    color: white;
+    padding: 15px;
+  }
+  
+  .chat-header h2 {
+    margin: 0;
+  }
+  
+  /* אזור ההודעות - גדל בהתאם למקום הפנוי */
+  .chat-messages {
+    flex: 1; /* תופס את כל המקום שנשאר */
+    padding: 20px;
+    background-color: rgba(255, 255, 255, 0.6); /* רקע לבן חצי שקוף לקריאות */
+    margin: 10px;
+    border-radius: 8px;
+    overflow-y: auto; /* גלילה אם יש הרבה הודעות */
+    text-align: right; /* יישור לימין לעברית */
+    direction: rtl;
+  }
+  
+  .chat-messages p {
+    margin-bottom: 10px;
+  }
+  
+  /* אזור הקלט למטה - פס אפור כמו ה-Footer */
+  .chat-input {
+    background-color: #53474F;
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* עיצוב תיבת הטקסט */
+  .chat-input input[type="text"] {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    flex: 1; /* תופס מקום */
+    max-width: 600px;
+  }
+  
+  /* כפתור השליחה */
+  .chat-input button {
+    background-color: #FFDCE8; /* כפתור ורוד בולט על הרקע האפור */
+    color: #53474F;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .chat-input button:hover {
+    background-color: #ffcce0;
+  }
+  
+  /* כפתור בחירת קובץ */
+  .chat-input input[type="file"] {
+    color: white;
+    max-width: 200px;
+  }
