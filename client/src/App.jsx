@@ -4,26 +4,10 @@ import Home from './pages/HomePage/HomePage';
 // import AuthPage from './pages/AuthPage/AuthPage';
 // import ChatPage from './pages/ChatPage/ChatPage';
 import styles from './styles/App.module.css';
-
+import AuthPage from './pages/AuthPage/AuthPage';
+import ChatScreen from "./pages/ChatScreen/ChatScreen";
 import projectLogo from './assets/project-logo.png'
 
-function AuthPlaceholder() {
-  return (
-    <div style={{ maxWidth: 820, margin: '0 auto' }}>
-      <h2>Sign in</h2>
-      <p>This page will be implemented by another teammate.</p>
-    </div>
-  );
-}
-
-function ChatPlaceholder() {
-  return (
-    <div style={{ maxWidth: 820, margin: '0 auto' }}>
-      <h2>Chat</h2>
-      <p>This page will be implemented by another teammate.</p>
-    </div>
-  );
-}
 
 function App() {
   return (
@@ -42,10 +26,10 @@ function App() {
         </header>
 
         <main className={styles.main}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/auth" element={<AuthPlaceholder />} />
-            <Route path="/chat" element={<ChatPlaceholder />} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/auth" element={<AuthPage />} /> 
+          <Route path="/chat" element={<ChatScreen />} /> 
           </Routes>
         </main>
 
