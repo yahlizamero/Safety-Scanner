@@ -5,27 +5,27 @@ function ChatScreen() {
     <div className="chat-screen">
       {/* כותרת */}
       <header className="chat-header">
-        <h2>{"צ'אט בטיחותי"}</h2>
+        <h2>Safe Chat</h2>
       </header>
 
       {/* אזור ההודעות */}
       <main className="chat-messages">
         <p>
-          <strong>מערכת:</strong> {"ברוכה הבאה לצ'אט! איך אפשר לעזור?"}
+          <strong>System:</strong> Welcome to the chat! How can I help?
         </p>
         <p>
-          <strong>משתמשת:</strong> היי, אני רוצה לדווח על משהו.
+          <strong>User:</strong> Hi, I want to report something.
         </p>
         {/* הודעות נוספות יתווספו כאן בהמשך */}
       </main>
 
       {/* אזור הקלט */}
       <footer className="chat-input">
-        <input type="text" placeholder="כתבי הודעה כאן..." />
+        <input type="text" placeholder="Type a message..." />
 
         <input type="file" accept="image/*" />
 
-        <button>שלח</button>
+        <button>Send</button>
       </footer>
     </div>
   );
