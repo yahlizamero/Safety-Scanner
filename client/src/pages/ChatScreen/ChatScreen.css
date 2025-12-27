@@ -1,75 +1,156 @@
+/* ChatScreen – aligned with Home/Auth glass + pink/purple palette */
+
 .chat-screen {
-    background-color: #FFDCE8;
-    height: 100vh; /* גובה מלא של המסך */
-    display: flex;
-    flex-direction: column;
-    font-family: sans-serif;
-    text-align: center;
-  }
-  
-  /* הכותרת העליונה - אפור כהה */
-  .chat-header {
-    background-color: #53474F;
-    color: white;
-    padding: 15px;
-  }
-  
-  .chat-header h2 {
-    margin: 0;
-  }
-  
-  /* אזור ההודעות - גדל בהתאם למקום הפנוי */
-  .chat-messages {
-    flex: 1; /* תופס את כל המקום שנשאר */
-    padding: 20px;
-    background-color: rgba(255, 255, 255, 0.6); /* רקע לבן חצי שקוף לקריאות */
-    margin: 10px;
-    border-radius: 8px;
-    overflow-y: auto; /* גלילה אם יש הרבה הודעות */
-    text-align: right; /* יישור לימין לעברית */
-    direction: rtl;
-  }
-  
-  .chat-messages p {
-    margin-bottom: 10px;
-  }
-  
-  /* אזור הקלט למטה - פס אפור כמו ה-Footer */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji";
+
+  /* Background similar vibe to homepage */
+  background:
+    radial-gradient(1200px 800px at 20% 10%, rgba(255, 0, 128, 0.18), transparent 55%),
+    radial-gradient(900px 700px at 85% 20%, rgba(121, 40, 202, 0.16), transparent 55%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.65));
+  color: rgba(31, 27, 36, 0.9);
+}
+
+/* Top bar */
+.chat-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 18px 16px;
+
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(31, 27, 36, 0.08);
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.6px;
+
+  /* Gradient headline like other pages */
+  background: linear-gradient(135deg, var(--pink, #ff0080), var(--purple-haze, #7928ca));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+}
+
+/* Main area centers a "card" chat container */
+.chat-messages {
+  width: min(980px, calc(100% - 32px));
+  margin: 18px auto 0;
+  padding: 18px;
+  flex: 1;
+
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(150, 16, 134, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 20px 40px -10px rgba(31, 27, 36, 0.12);
+
+  overflow-y: auto;
+  text-align: left;
+  direction: ltr;
+}
+
+/* Message bubbles (simple, professional) */
+.chat-messages p {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(31, 27, 36, 0.08);
+  background: rgba(255, 255, 255, 0.75);
+  line-height: 1.55;
+  box-shadow: 0 8px 18px rgba(31, 27, 36, 0.06);
+}
+
+.chat-messages p strong {
+  color: rgba(121, 40, 202, 0.95);
+  font-weight: 850;
+  margin-right: 6px;
+}
+
+/* Bottom input bar */
+.chat-input {
+  width: min(980px, calc(100% - 32px));
+  margin: 14px auto 18px;
+  padding: 12px;
+
+  display: flex;
+  gap: 10px;
+  align-items: center;
+
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(31, 27, 36, 0.08);
+  border-radius: 18px;
+  box-shadow: 0 14px 30px -12px rgba(31, 27, 36, 0.14);
+}
+
+.chat-input input[type="text"] {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(31, 27, 36, 0.1);
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 15px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.chat-input input[type="text"]:focus {
+  outline: none;
+  border-color: var(--pink, #ff0080);
+  box-shadow: 0 0 0 3px rgba(255, 0, 128, 0.12);
+}
+
+/* File input: keep readable + not too wide */
+.chat-input input[type="file"] {
+  max-width: 220px;
+  font-size: 13px;
+  color: rgba(31, 27, 36, 0.8);
+}
+
+.chat-input button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 12px 18px;
+  border-radius: 12px;
+  border: 1px solid rgba(150, 16, 134, 0.25);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, var(--pink, #ff0080), var(--purple-haze, #7928ca));
+  box-shadow: 0 8px 20px rgba(150, 16, 134, 0.25);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+}
+
+.chat-input button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(150, 16, 134, 0.35);
+}
+
+.chat-input button:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 720px) {
   .chat-input {
-    background-color: #53474F;
-    padding: 15px;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
   }
-  
-  /* עיצוב תיבת הטקסט */
-  .chat-input input[type="text"] {
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    flex: 1; /* תופס מקום */
-    max-width: 600px;
-  }
-  
-  /* כפתור השליחה */
-  .chat-input button {
-    background-color: #FFDCE8; /* כפתור ורוד בולט על הרקע האפור */
-    color: #53474F;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-  }
-  
-  .chat-input button:hover {
-    background-color: #ffcce0;
-  }
-  
-  /* כפתור בחירת קובץ */
+
   .chat-input input[type="file"] {
-    color: white;
-    max-width: 200px;
+    max-width: 100%;
   }
+}
