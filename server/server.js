@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 import rubberDuckRoutes from './routes/rubberDucks.js'; // Import the routes
 
 const __filename = fileURLToPath(import.meta.url);
@@ -27,3 +28,7 @@ const PORT = process.env.PORT;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ Connected to MongoDB Atlas - SafetyScanner'))
+  .catch(err => console.error('❌ MongoDB connection error:', err));
