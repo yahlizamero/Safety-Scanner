@@ -1,15 +1,17 @@
+import { useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/HomePage/HomePage';
-// Will be added later:
-// import AuthPage from './pages/AuthPage/AuthPage';
-// import ChatPage from './pages/ChatPage/ChatPage';
-import styles from './styles/App.module.css';
 import AuthPage from './pages/AuthPage/AuthPage';
 import ChatScreen from "./pages/ChatScreen/ChatScreen";
-import projectLogo from './assets/project-logo.png'
-
+import styles from './styles/App.module.css';
+import projectLogo from './assets/project-logo.png';
 
 function App() {
+  // --- התיקון כאן: מחקנו את ה-setUser (החלק השני) כי הוא מיותר כרגע ---
+  // במקום: const [currentUser, setUser] = ...
+  // כתבנו רק:
+  const [currentUser] = useState({ name: "dear", id: 1 });
+
   return (
       <div className={styles.app}>
         <header className={styles.appHeader}>
@@ -20,7 +22,19 @@ function App() {
             
             <nav className={styles.appNav}>
               <Link to="/" className={styles.appLink}>Home</Link>
-              <Link to="/auth" className={styles.signInButton}>Sign in</Link>
+              
+              {!currentUser ? (
+                <Link to="/auth" className={styles.signInButton}>Sign in</Link>
+              ) : (
+                <>
+                  <Link to="/chat" className={styles.appLink} style={{color: '#e91e63', fontWeight: 'bold'}}>
+                    My Chat
+                  </Link>
+                  <span className={styles.appLink} style={{cursor: 'default'}}>
+                     | Hello, {currentUser.name}
+                  </span>
+                </>
+              )}
             </nav>
           </div>
         </header>
@@ -29,7 +43,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth" element={<AuthPage />} /> 
-          <Route path="/chat" element={<ChatScreen />} /> 
+          <Route path="/chat" element={<ChatScreen user={currentUser} />} /> 
           </Routes>
         </main>
 
