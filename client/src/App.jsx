@@ -7,10 +7,8 @@ import styles from './styles/App.module.css';
 import projectLogo from './assets/project-logo.png';
 
 function App() {
-  // --- התיקון כאן: מחקנו את ה-setUser (החלק השני) כי הוא מיותר כרגע ---
-  // במקום: const [currentUser, setUser] = ...
-  // כתבנו רק:
-  const [currentUser] = useState({ name: "dear", id: 1 });
+  //נגרום למערכת להבין שכרגע אף אחד לא מחוב
+  const [currentUser] = useState(null);
 
   return (
       <div className={styles.app}>
