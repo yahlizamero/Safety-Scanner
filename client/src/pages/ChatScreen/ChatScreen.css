@@ -1,166 +1,254 @@
 /* src/pages/ChatScreen/ChatScreen.css */
 
+/* משתנים לצבעים חמודים ורכים */
+:root {
+  --cute-purple: #9b5de5;
+  --cute-pink: #f15bb5;
+  --cute-grad: linear-gradient(135deg, var(--cute-purple), var(--cute-pink));
+  --bg-soft: #f3f4f6;
+  --white: #ffffff;
+  --text-dark: #2d3748;
+}
+
 .chat-screen {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #f0f2f5; /* רקע בהיר ונקי */
+  background: var(--bg-soft);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl; /* חשוב לעברית */
 }
 
-.chat-header {
-  background: white;
-  padding: 15px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  text-align: center;
+/* --- הידר (כותרת) חמוד --- */
+.chat-header-cute {
+  background: var(--white);
+  padding: 12px 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
   z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-.chat-header h2 {
+.header-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid var(--cute-purple);
+  padding: 2px;
+  background: var(--bg-soft);
+}
+
+.chat-header-cute h2 {
   margin: 0;
-  color: #7928ca; /* סגול המותג שלך */
-  font-size: 1.2rem;
+  color: var(--text-dark);
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
-/* אזור ההודעות */
+.online-status {
+  font-size: 0.85rem;
+  color: #10b981; /* ירוק */
+  font-weight: 600;
+  display: block;
+}
+
+/* --- אזור ההודעות --- */
 .chat-messages {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px; 
+  /* דוגמת נקודות עדינה ברקע */
+  background-image: radial-gradient(rgba(155, 93, 229, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px; 
 }
 
-.message-row {
+/* מיכל של שורה (אווטאר + בועה) */
+.message-row-container {
   display: flex;
-  width: 100%;
+  align-items: flex-end; 
+  gap: 10px;
+  max-width: 85%;
 }
 
-.message-row.user {
-  justify-content: flex-end; /* הודעות שלי בצד ימין */
+/* הודעות שלי (משתמש) */
+.message-row-container.user {
+  align-self: flex-end; /* צד שמאל */
+  flex-direction: row-reverse; /* היפוך סדר האלמנטים */
 }
 
-.message-row.system {
-  justify-content: flex-start; /* הודעות מערכת בצד שמאל */
+/* הודעות מערכת (בונגי) */
+.message-row-container.system {
+  align-self: flex-start; /* צד ימין */
 }
 
-.message-bubble {
-  max-width: 75%;
-  padding: 12px 16px;
-  border-radius: 18px;
+/* תמונות האווטאר בתוך הצ'אט */
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  flex-shrink: 0; 
+}
+
+/* --- בועות חמודות --- */
+.cute-bubble {
+  padding: 14px 18px;
+  border-radius: 22px; 
   font-size: 0.95rem;
-  line-height: 1.4;
+  line-height: 1.5;
   position: relative;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  white-space: pre-wrap;
+  text-align: right;
 }
 
-.user .message-bubble {
-  background: linear-gradient(135deg, #7928ca, #ff0080); /* הגרדיאנט שלך */
+.user .cute-bubble {
+  background: var(--cute-grad);
   color: white;
-  border-bottom-left-radius: 18px;
-  border-bottom-right-radius: 4px; /* שפיץ קטן */
+  border-bottom-left-radius: 4px; /* שפיץ קטן בצד */
 }
 
-.system .message-bubble {
-  background: white;
-  color: #333;
-  border-bottom-left-radius: 4px; /* שפיץ קטן */
-  border-bottom-right-radius: 18px;
+.system .cute-bubble {
+  background: var(--white);
+  color: var(--text-dark);
+  border-bottom-right-radius: 4px; /* שפיץ קטן בצד */
+  border: 1px solid #e5e7eb;
 }
 
-.msg-image {
+.msg-image-preview {
   max-width: 100%;
-  border-radius: 12px;
-  margin-bottom: 8px;
+  border-radius: 16px;
+  margin-bottom: 10px;
   display: block;
+  border: 2px solid rgba(255,255,255,0.5);
 }
 
-/* אנימציית הקלדה */
+/* --- אנימציית הקלדה --- */
+.typing-bubble {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+}
+
 .typing-indicator span {
   display: inline-block;
-  width: 6px;
-  height: 6px;
-  background-color: #b0b0b0;
+  width: 8px;
+  height: 8px;
+  background-color: var(--cute-purple);
   border-radius: 50%;
-  animation: typing 1.4s infinite ease-in-out both;
-  margin: 0 2px;
+  margin: 0 3px;
+  opacity: 0.4;
+  animation: cuteBounce 1.4s infinite ease-in-out both;
 }
 
 .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
 .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
 
-@keyframes typing {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
+@keyframes cuteBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; background-color: var(--cute-pink); }
 }
 
-/* אזור הקלט התחתון */
-.chat-input-area {
-  background: white;
-  padding: 10px;
-  border-top: 1px solid #ddd;
+/* --- אזור קלט תחתון --- */
+.cute-input-area {
+  background: var(--white);
+  padding: 15px;
+  border-top: 1px solid #eee;
 }
 
-/* תצוגה מקדימה של תמונה */
+/* תצוגה מקדימה לפני שליחה */
 .image-preview-container {
-  position: relative;
-  width: fit-content;
-  margin-bottom: 10px;
-  margin-left: 10px;
+    position: relative;
+    width: fit-content;
+    margin: 0 15px 10px 0;
+    animation: fadeUp 0.3s ease;
 }
 .image-preview-container img {
-  height: 60px;
-  border-radius: 8px;
-  border: 2px solid #7928ca;
+    height: 80px;
+    border-radius: 12px;
+    border: 3px solid var(--cute-purple);
 }
 .close-preview {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background: #ff0080;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
-  font-size: 12px;
+    position: absolute;
+    top: -10px;
+    left: -10px; /* צד שמאל כי אנחנו בעברית */
+    background: var(--cute-pink);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* בר הקלט עצמו */
-.input-bar {
+/* בר הקלט */
+.input-bar-cute {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #f0f2f5;
-  padding: 5px 10px;
-  border-radius: 24px;
+  gap: 12px;
+  background: var(--bg-soft);
+  padding: 8px 12px;
+  border-radius: 30px;
+  border: 2px solid transparent;
+  transition: border-color 0.3s;
+}
+.input-bar-cute:focus-within {
+  border-color: var(--cute-purple);
 }
 
-.input-bar input[type="text"] {
+.cute-text-input {
   flex: 1;
   border: none;
   background: transparent;
-  padding: 10px;
+  padding: 8px;
   outline: none;
-  font-size: 16px;
+  font-size: 1rem;
+  color: var(--text-dark);
+  text-align: right;
 }
 
 .icon-btn {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   cursor: pointer;
   padding: 5px;
-  color: #666;
-  transition: color 0.2s;
-}
-.icon-btn:hover { color: #7928ca; }
-
-.send-btn {
-  background: transparent;
+  transition: transform 0.2s;
   border: none;
-  color: #7928ca;
-  font-size: 1.4rem;
-  cursor: pointer;
+  background: none;
 }
-.send-btn:disabled { color: #ccc; }
+.icon-btn:hover { transform: scale(1.1); }
+
+.send-btn-cute {
+  background: var(--cute-grad);
+  border: none;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+  box-shadow: 0 4px 10px rgba(155, 93, 229, 0.3);
+}
+.send-btn-cute:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+.send-btn-cute:disabled { 
+  opacity: 0.5; 
+  box-shadow: none;
+}
+/* אייקון המטוס */
+.send-btn-cute svg {
+    fill: white;
+    transform: rotate(180deg); /* מתאים לעברית */
+    margin-right: 2px;
+}
