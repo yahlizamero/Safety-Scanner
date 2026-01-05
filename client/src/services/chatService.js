@@ -1,36 +1,41 @@
-import OpenAI from "openai";
+import axiosInstance from "./api";
 
-// חיבור ל-OpenAI
-const openai = new OpenAI({
-  apiKey: import.meta.env.VITE_OPENAI_API_KEY, 
-  dangerouslyAllowBrowser: true 
-});
+// Convert a File (image) to a DataURL (base64) so we can send it to the server.
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result); // "data:image/...;base64,..."
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
 
 export const sendMessageToAI = async (text, file) => {
-  // --- התיקון כאן: הוספנו את file להדפסה ---
-  console.log("Sending to OpenAI -> Text:", text, "File:", file);
+  console.log("Sending to backend -> Text:", text, "File:", file);
 
   try {
-    const messages = [
-      {
-        role: "system",
-        content: "אתה עוזר בטיחות חכם בשם SafetyScanner. התפקיד שלך הוא לעזור למשתמשים לזהות סכנות במוצרים. ענה תמיד בעברית, בצורה קצרה ומקצועית."
-      },
-      {
-        role: "user",
-        content: text
-      }
-    ];
+    let imageDataUrl = null;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o", 
-      messages: messages,
+    if (file) {
+      const MAX_MB = 5;
+      if (file.size > MAX_MB * 1024 * 1024) {
+        return `התמונה גדולה מדי (מעל ${MAX_MB}MB). נסי להעלות תמונה קטנה יותר.`;
+      }
+      imageDataUrl = await fileToDataUrl(file);
+    }
+
+    const { data } = await axiosInstance.post("/ai/safety-check", {
+      text,
+      imageDataUrl,
     });
 
-    return completion.choices[0].message.content;
-
+    return data?.reply ?? "לא התקבלה תשובה מהשרת.";
   } catch (error) {
-    console.error("Error communicating with OpenAI:", error);
-    return "אופס, נתקלתי בבעיה בחיבור לשרת ה-AI. אנא בדוק את החיבור לרשת או את המפתח (API Key).";
+    console.error("Error calling /ai/safety-check:", error);
+    const serverMsg = error?.response?.data?.reply;
+    return (
+      serverMsg ||
+      "אופס, הייתה בעיה בשרת בזמן בדיקת התמונה. ודאי שה-Backend רץ על פורט 5000."
+    );
   }
 };
