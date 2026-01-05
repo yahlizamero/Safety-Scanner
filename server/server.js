@@ -7,6 +7,7 @@ import cors from "cors";
 import mongoose from "mongoose";
 
 import aiRoutes from "./routes/ai.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 
@@ -30,7 +31,8 @@ app.use(
 
 // Always answer preflight (Express 5 safe)
 app.options(/.*/, cors());
-
+app.use("/api/users", userRoutes); 
+app.use("/ai", aiRoutes);
 app.use("/ai", aiRoutes);
 
 const PORT = process.env.PORT || 5000;

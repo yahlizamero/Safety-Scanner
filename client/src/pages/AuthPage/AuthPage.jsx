@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'; // מחקנו את React, השאר�
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types'; // הוספנו את זה בשביל התיקון
 import './AuthPage.css';
+import { signUp, login } from '../../services/authService';
 
 const AuthPage = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -31,21 +32,46 @@ const AuthPage = ({ onLogin }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => { // הוספנו async
     e.preventDefault();
-    console.log('Form Submitted:', formData);
 
-    const userToLogin = { 
-      name: isLogin ? "User" : (formData.name || "Guest"), 
-      email: formData.email,
-      id: Date.now()
-    };
+    if (!isLogin) {
+      try {
+        const result = await signUp({
+          fullName: formData.name,
+          email: formData.email,
+          password: formData.password
+        });
 
-    if (onLogin) {
-      onLogin(userToLogin);
+        alert("Account created successfully!");
+        if (onLogin) onLogin({ name: formData.name, email: formData.email, id: result.userId });
+        navigate('/chat');
+      } catch (err) {
+        alert(err.message); // יציג הודעה אם למשל האימייל כבר קיים
+      }
+    } else {
+      // --- Login Logic ---
+      try {
+        const result = await login({
+          email: formData.email,
+          password: formData.password
+        });
+
+        console.log("Login Success:", result);
+        
+        if (onLogin) {
+          onLogin({ 
+            name: result.user.fullName, 
+            email: result.user.email, 
+            id: result.user.id 
+          });
+        }
+        
+        navigate('/chat');
+      } catch (err) {
+        alert(err.message); // יקפיץ "Invalid email or password" אם הפרטים שגויים
+      }
     }
-
-    navigate('/chat');
   };
 
   return (
