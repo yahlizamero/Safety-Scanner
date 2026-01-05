@@ -1,34 +1,59 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
-import rubberDuckRoutes from './routes/rubberDucks.js'; // Import the routes
+import "dotenv/config";
+
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+import cors from "cors";
+import mongoose from "mongoose";
+
+import aiRoutes from "./routes/ai.js";
+
+const app = express();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
+// Increase limit for base64 images
+app.use(express.json({ limit: "10mb" }));
 
-const app = express();
+app.use("/images", express.static(path.join(__dirname, "images")));
 
-app.use(express.json());
-app.use('/images', express.static(path.join(__dirname, 'images'))); // Serve static images
 
-app.use(cors({
-  origin: process.env.CLIENT_URL
-}));
+// CORS – allow all local origins during development
+app.use(
+  cors({
+    origin: true, // reflect request origin
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
-// Use the routes file for all `/ducks` routes
-app.use('/ducks', rubberDuckRoutes);
+// Always answer preflight (Express 5 safe)
+app.options(/.*/, cors());
 
-// Start server
-const PORT = process.env.PORT;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+app.use("/ai", aiRoutes);
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ Connected to MongoDB Atlas - SafetyScanner'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+const PORT = process.env.PORT || 5000;
+
+// Allow running the server even if MongoDB isn't configured yet.
+const mongoUri = process.env.MONGO_URI;
+
+const startServer = () =>
+  app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+
+if (!mongoUri || mongoUri.trim() === "") {
+  console.warn("⚠️ MONGO_URI is not set. Starting WITHOUT MongoDB.");
+  startServer();
+} else {
+  mongoose
+    .connect(mongoUri)
+    .then(() => {
+      console.log("✅ Connected to MongoDB Atlas - SafetyScanner");
+      return startServer();
+    })
+    .catch((err) => {
+      console.error("❌ MongoDB connection error:", err);
+      console.warn("⚠️ Starting server WITHOUT MongoDB.");
+      return startServer();
+    });
+}
