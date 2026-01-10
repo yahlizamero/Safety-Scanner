@@ -172,3 +172,37 @@ input:focus {
   background: none; border: none; color: rgba(121, 40, 202, .95);
   font-weight: 950; cursor: pointer; text-decoration: underline;
 }
+
+.error-msg {
+  background: rgba(255, 0, 0, 0.1);
+  color: #ff0000;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255, 0, 0, 0.2);
+}
+
+.msg-box {
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+  animation: fadeUp 400ms ease-out both;
+}
+
+.error-msg {
+  background: rgba(255, 77, 77, 0.12);
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  color: #e63946;
+}
+
+.success-msg {
+  background: rgba(46, 213, 115, 0.12);
+  border: 1px solid rgba(46, 213, 115, 0.3);
+  color: #2ed573;
+}

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'; // מחקנו את React, השארנו רק את ה-Hooks
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types'; // הוספנו את זה בשביל התיקון
+import PropTypes from 'prop-types';
 import './AuthPage.css';
 import { signUp, login } from '../../services/authService';
 
@@ -10,7 +10,10 @@ const AuthPage = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(false); 
   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
-  // אפקט החלקיקים
+  // --- מצבים חדשים להודעות (שינוי מינימלי) ---
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
   useEffect(() => {
     const createSpark = () => {
       const s = document.createElement("div");
@@ -29,11 +32,25 @@ const AuthPage = ({ onLogin }) => {
   }, []);
 
   const handleChange = (e) => {
+    setError(''); // איפוס שגיאה כשמתחילים להקליד
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => { // הוספנו async
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
+
+    // --- ולידציה ב-FRONT (בדיקות לפני שליחה) ---
+    if (!isLogin && !formData.name.trim()) {
+      return setError("Please enter your full name");
+    }
+    if (!formData.email.includes('@')) {
+      return setError("Please enter a valid email address");
+    }
+    if (formData.password.length < 6) {
+      return setError("Password must be at least 6 characters");
+    }
 
     if (!isLogin) {
       try {
@@ -43,21 +60,26 @@ const AuthPage = ({ onLogin }) => {
           password: formData.password
         });
 
-        alert("Account created successfully!");
+        // --- הודעת הצלחה והשהיה ---
+        setSuccess("Account created! Redirecting to chat...");
         if (onLogin) onLogin({ name: formData.name, email: formData.email, id: result.userId });
-        navigate('/chat');
+        
+        setTimeout(() => {
+          navigate('/chat');
+        }, 2000); // השהייה של 2 שניות
+
       } catch (err) {
-        alert(err.message); // יציג הודעה אם למשל האימייל כבר קיים
+        setError(err.message); 
       }
     } else {
-      // --- Login Logic ---
       try {
         const result = await login({
           email: formData.email,
           password: formData.password
         });
 
-        console.log("Login Success:", result);
+        // --- הודעת הצלחה והשהיה ---
+        setSuccess("Welcome back! Redirecting...");
         
         if (onLogin) {
           onLogin({ 
@@ -67,9 +89,12 @@ const AuthPage = ({ onLogin }) => {
           });
         }
         
-        navigate('/chat');
+        setTimeout(() => {
+          navigate('/chat');
+        }, 1500); // השהייה קצרה יותר להתחברות
+
       } catch (err) {
-        alert(err.message); // יקפיץ "Invalid email or password" אם הפרטים שגויים
+        setError(err.message);
       }
     }
   };
@@ -113,19 +138,24 @@ const AuthPage = ({ onLogin }) => {
           <div className="tabs">
             <button 
               className={`tab ${!isLogin ? 'active' : ''}`} 
-              onClick={() => setIsLogin(false)}
+              onClick={() => { setIsLogin(false); setError(''); setSuccess(''); }}
             >
               Sign up
             </button>
             <button 
               className={`tab ${isLogin ? 'active' : ''}`} 
-              onClick={() => setIsLogin(true)}
+              onClick={() => { setIsLogin(true); setError(''); setSuccess(''); }}
             >
               Sign in
             </button>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          {/* --- הצגת ההודעות בתוך ה-Card --- */}
+          {error && <div className="msg-box error-msg">{error}</div>}
+          {success && <div className="msg-box success-msg">{success}</div>}
+
+          {/* הוספת noValidate מבטלת את הבועות של הדפדפן */}
+          <form onSubmit={handleSubmit} noValidate>
             {!isLogin && (
               <>
                 <label>Full name</label>
@@ -137,7 +167,6 @@ const AuthPage = ({ onLogin }) => {
                     placeholder="e.g., Maya Cohen" 
                     value={formData.name}
                     onChange={handleChange} 
-                    required={!isLogin} 
                   />
                 </div>
               </>
@@ -152,7 +181,6 @@ const AuthPage = ({ onLogin }) => {
                 placeholder="maya@example.com" 
                 value={formData.email}
                 onChange={handleChange} 
-                required 
               />
             </div>
 
@@ -165,7 +193,6 @@ const AuthPage = ({ onLogin }) => {
                 placeholder="******" 
                 value={formData.password}
                 onChange={handleChange} 
-                required 
               />
             </div>
 
@@ -176,7 +203,7 @@ const AuthPage = ({ onLogin }) => {
 
           <div className="switchLine">
             {isLogin ? "Don’t have an account? " : "Already have an account? "}
-            <button onClick={() => setIsLogin(!isLogin)}>
+            <button onClick={() => { setIsLogin(!isLogin); setError(''); setSuccess(''); }}>
               {isLogin ? "Create one" : "Sign in"}
             </button>
           </div>
@@ -187,7 +214,6 @@ const AuthPage = ({ onLogin }) => {
   );
 };
 
-// 👇 החלק הזה מתקן את השגיאה של onLogin missing in props validation
 AuthPage.propTypes = {
   onLogin: PropTypes.func,
 };

@@ -14,25 +14,15 @@ export const login = async (userData) => {
 };
 
 export const signUp = async (userData) => {
-  // שורת בדיקה - תסתכלי מה היא מדפיסה בדפדפן
-  console.log("Attempting to connect to:", API_URL);
-
-  if (!API_URL) {
-    throw new Error("API URL is undefined. Check your .env file naming!");
-  }
-
-  const response = await fetch(`${API_URL}/api/users/register`, {
+  const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/users/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(userData),
   });
 
-  const text = await response.text();
-  
-  try {
-    return JSON.parse(text);
-  } catch (err) {
-  console.error("Full error details:", err); // הוספת המשתנה כאן תפתור את השגיאה בטרמינל
-  throw new Error("Server communication error");
-}
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.message || 'Registration failed');
+  }
+  return data;
 };
