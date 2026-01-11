@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styles from "./Home.module.css";
 import heroImg from "../../assets/hero-teens.png"; // <- make sure the filename matches
+import logo from "../../assets/project-logo.png";
 
 const Home = () => {
   return (
@@ -8,6 +9,9 @@ const Home = () => {
       {/* HERO */}
       <section className={styles.hero}>
         <div className={styles.heroCard}>
+          <div className={styles.brandRow}>
+            <img src={logo} alt="SafetyScanner" className={styles.brandLogo} />
+          </div>
           <div className={styles.kicker}>Teen Internet Safety • BeSafe</div>
 
           <h1 className={styles.headline}>
@@ -61,16 +65,16 @@ const Home = () => {
         </aside>
       </section>
 
-      {/* ABOUT */}
-      <section id="about">
-        <h2 className={styles.sectionTitle}>About SafetyScanner</h2>
-        <p className={styles.aboutText}>
-          The goal is simple: help teen girls spot what could reveal too much — before posting.
-          You get clear warnings and quick edits, with a future “public presence” report to help you lock down what’s visible.
-        </p>
-      </section>
+        <section id="about">
+          <h2 className={styles.sectionTitle}>About SafetyScanner</h2>
+          <p className={styles.aboutText}>
+            The goal is simple: help teen girls spot what could reveal too much — before posting. <br />
+            You get clear warnings and quick edits, with a future “public presence” report to help you lock down what’s visible.
+            Change modes for safety education or get help resources if needed.
+          </p>
+        </section>
 
-      {/* FEATURES */}
+        {/* FEATURES */}
       <section className={styles.features}>
         <div className={styles.featureCard}>
           <h3 className={styles.featureTitle}>Photo safety scan</h3>
@@ -87,9 +91,10 @@ const Home = () => {
         </div>
 
         <div className={styles.featureCard}>
-          <h3 className={styles.featureTitle}>Online presence report</h3>
+          <h3 className={styles.featureTitle}>Safety tips and help</h3>
           <p className={styles.featureText}>
-            Future: scan public tags/posts/photos and generate a “hide/delete” checklist.
+            Recieve safety recommendations and privacy tips.
+            Provides Hotlines and Resources for support.
           </p>
         </div>
       </section>

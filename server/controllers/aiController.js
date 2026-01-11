@@ -1,6 +1,7 @@
 // server/controllers/aiController.js
 import "dotenv/config";
 import OpenAI from "openai";
+import { MODE_PROMPTS } from "../prompts/modes.js";
 
 function getOpenAIClient() {
   const apiKey = process.env.OPENAI_API_KEY;
@@ -12,27 +13,9 @@ function getOpenAIClient() {
   return new OpenAI({ apiKey });
 }
 
-const SYSTEM_PROMPT = `
-אתה עוזר בטיחות דיגיטלית לנוער (13–17) בעברית. המשימה: להעריך האם תמונה/צילום מסך שמבקשים להעלות לרשת מכיל פרטים מזהים או רגישים, ולהמליץ מה לטשטש/לחתוך כדי לצמצם סיכון.
-
-כללים:
-- אל תזהה אנשים, אל תנחש שמות/מיקומים, ואל תציע דרכים לעקוף פרטיות.
-- זהירות מיוחדת כשיש קטינים/ות: פנים, שם/לוגו של בית ספר/גן, תגי שם, מדים/סמלים, רמזי מיקום (שלטי רחוב, נקודות ציון), לוחיות רישוי, מסמכים/ברקודים/קודים.
-- אם יש כיתוב/לוגו/שלט שמזהה מוסד או מיקום—המלץ לטשטש/לחתוך.
-- אם יש פנים ברורות של קטינים—המלץ לטשטש פנים או לוודא אישור הורים לפני פרסום פומבי.
-- אם אין פרטים מזהים משמעותיים, אמור זאת במפורש.
-
-פורמט תשובה (חובה):
-1) שורת פתיחה קצרה שמסכמת האם יש מה לטשטש.
-2) "פרטים מזהים/רגישים בתמונה" + רשימה ממוספרת.
-3) "מה לא בעייתי במיוחד" (אם רלוונטי).
-4) "המלצה מעשית" – צעדים ספציפיים: טשטוש/חיתוך/הסתרה.
-5) סיום קצר, בטון אמפתי ובטוח.
-`.trim();
-
 export async function safetyCheck(req, res) {
   try {
-    const { text, imageDataUrl } = req.body || {};
+    const { text, imageDataUrl, mode } = req.body || {};
 
     if (!text && !imageDataUrl) {
       return res.status(400).json({ reply: "נא לשלוח טקסט או תמונה לבדיקה." });
@@ -53,11 +36,14 @@ export async function safetyCheck(req, res) {
       });
     }
 
+    const selectedMode = mode || "social_upload";
+    const systemPrompt = MODE_PROMPTS[selectedMode] || MODE_PROMPTS.social_upload;
+
     const openai = getOpenAIClient();
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
       input: [
-        { role: "system", content: [{ type: "input_text", text: SYSTEM_PROMPT }] },
+        { role: "system", content: [{ type: "input_text", text: systemPrompt }] },
         { role: "user", content: userContent },
       ],
     });

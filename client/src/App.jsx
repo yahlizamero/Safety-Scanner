@@ -1,63 +1,21 @@
 import { useState } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-import Home from './pages/HomePage/HomePage';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import HomePage from './pages/HomePage/HomePage';
 import AuthPage from './pages/AuthPage/AuthPage';
-import ChatScreen from "./pages/ChatScreen/ChatScreen";
-import styles from './styles/App.module.css';
-import projectLogo from './assets/project-logo.png';
+import ChatScreen from './pages/ChatScreen/ChatScreen';
 
 function App() {
-  //נגרום למערכת להבין שכרגע אף אחד לא מחוב
-  const [currentUser] = useState(null);
+  const [user, setUser] = useState(null);
 
   return (
-      <div className={styles.app}>
-        <header className={styles.appHeader}>
-          <div className={styles.headerInner}>
-            <div className={styles.brand}>
-              <img src={projectLogo} alt="SafetyScanner logo" className={styles.appLogo} />
-            </div>
-            
-            <nav className={styles.appNav}>
-              <Link to="/" className={styles.appLink}>Home</Link>
-              
-              {!currentUser ? (
-                <Link to="/auth" className={styles.signInButton}>Sign in</Link>
-              ) : (
-                <>
-                  <Link to="/chat" className={styles.appLink} style={{color: '#e91e63', fontWeight: 'bold'}}>
-                    My Chat
-                  </Link>
-                  <span className={styles.appLink} style={{cursor: 'default'}}>
-                     | Hello, {currentUser.name}
-                  </span>
-                </>
-              )}
-            </nav>
-          </div>
-        </header>
-
-        <main className={styles.main}>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/auth" element={<AuthPage />} /> 
-          <Route path="/chat" element={<ChatScreen user={currentUser} />} /> 
-          </Routes>
-        </main>
-
-        <footer className={styles.footer}>
-          <div className={styles.footerInner}>
-            <div className={styles.copyright}>
-              &copy; 2026 SafetyScanner. All rights reserved.
-            </div>
-            <div className={styles.footerLinks}>
-              <a href="#" className={styles.footerLink}>Privacy Policy</a>
-              <a href="#" className={styles.footerLink}>Terms of Service</a>
-              <a href="#" className={styles.footerLink}>Contact</a>
-            </div>
-          </div>
-        </footer>
-      </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/auth" element={<AuthPage onLogin={setUser} />} />
+        <Route path="/chat" element={<ChatScreen user={user} />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

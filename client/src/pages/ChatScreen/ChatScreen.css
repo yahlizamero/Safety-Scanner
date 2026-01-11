@@ -14,9 +14,14 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: var(--bg-soft);
+  min-height: 0;      /* חשוב כדי לאפשר גלילה פנימית */
+  overflow: hidden;   /* מונע גלילה של כל הדף בתוך הצ'אט */
+  background:
+    radial-gradient(circle at 12% 18%, rgba(168, 196, 95, 0.12), transparent 50%),
+    radial-gradient(circle at 88% 22%, rgba(140, 96, 205, 0.12), transparent 50%),
+    linear-gradient(180deg, #f7f8f4 0%, #f8f6fb 55%, #ffffff 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  direction: rtl; /* חשוב לעברית */
+  direction: rtl;
 }
 
 /* --- הידר (כותרת) חמוד --- */
@@ -28,6 +33,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-shrink: 0;
 }
 
 .header-avatar {
@@ -53,9 +59,23 @@
   display: block;
 }
 
+.home-logo-link {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.home-logo {
+  width: 104px;
+  height: 104px;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
 /* --- אזור ההודעות --- */
 .chat-messages {
   flex: 1;
+  min-height: 0;
   padding: 20px;
   overflow-y: auto;
   display: flex;
@@ -160,6 +180,10 @@
   background: var(--white);
   padding: 15px;
   border-top: 1px solid #eee;
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
 }
 
 /* תצוגה מקדימה לפני שליחה */
@@ -251,4 +275,105 @@
     fill: white;
     transform: rotate(180deg); /* מתאים לעברית */
     margin-right: 2px;
+}
+
+/* --- מצב שיחה (Modes) --- */
+
+.mode-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.mode-bar.vertical {
+  flex-direction: column;
+}
+
+.mode-bar.vertical .mode-btn {
+  width: 100%;
+  text-align: center;
+}
+
+.mode-btn {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(155, 93, 229, 0.35);
+  background: rgba(155, 93, 229, 0.08);
+  color: var(--text-dark);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mode-btn:hover:not(:disabled) {
+  background: rgba(155, 93, 229, 0.18);
+}
+
+.mode-btn.active {
+  background: var(--cute-grad);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 3px 8px rgba(155, 93, 229, 0.35);
+}
+
+.mode-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Layout: Chat + Side Panel --- */
+.chat-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px; /* צ'אט + פאנל ימין */
+  gap: 16px;
+  width: 100%;
+  align-items: stretch;
+  padding: 16px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.chat-main {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.chat-aside {
+  min-width: 0;
+}
+
+/* פאנל צד שיישאר מול העיניים בגלילה */
+.aside-card {
+  position: sticky;
+  top: 18px;
+}
+
+/* Subtle scrollbar styling (optional, keeps the design soft) */
+.chat-messages {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155,93,229,0.35) transparent;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(155,93,229,0.25);
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+/* רספונסיבי: במסכים צרים הפאנל יורד למטה */
+@media (max-width: 900px) {
+  .chat-layout {
+    grid-template-columns: 1fr;
+  }
 }

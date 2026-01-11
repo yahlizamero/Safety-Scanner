@@ -10,8 +10,8 @@ function fileToDataUrl(file) {
   });
 }
 
-export const sendMessageToAI = async (text, file) => {
-  console.log("Sending to backend -> Text:", text, "File:", file);
+export const sendMessageToAI = async (text, file, mode = "social_upload") => {
+  console.log("Sending to backend -> Mode:", mode, "Text:", text, "File:", file);
 
   try {
     let imageDataUrl = null;
@@ -27,6 +27,7 @@ export const sendMessageToAI = async (text, file) => {
     const { data } = await axiosInstance.post("/ai/safety-check", {
       text,
       imageDataUrl,
+      mode,
     });
 
     return data?.reply ?? "לא התקבלה תשובה מהשרת.";
@@ -35,7 +36,7 @@ export const sendMessageToAI = async (text, file) => {
     const serverMsg = error?.response?.data?.reply;
     return (
       serverMsg ||
-      "אופס, הייתה בעיה בשרת בזמן בדיקת התמונה. ודאי שה-Backend רץ על פורט 5000."
+      "אופס, הייתה בעיה בשרת בזמן בדיקת התמונה. ודאי שה-Backend רץ ושה-API base URL נכון."
     );
   }
 };
