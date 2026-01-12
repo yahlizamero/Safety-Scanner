@@ -95,17 +95,36 @@ function ChatScreen({ user }) {
     setPreviewUrl(null);
   };
 
+  const fileToDataUrl = (file) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
   const handleSend = async () => {
     if (!inputText.trim() && !selectedFile) return;
 
     // 1. יצירת הודעת משתמש
+    const imageDataUrl = selectedFile ? await fileToDataUrl(selectedFile) : null;
     const newMsg = {
       id: Date.now(),
       sender: 'user',
       text: inputText,
       image: previewUrl,
+      imageDataUrl,
       avatar: USER_AVATAR,
     };
+
+    const isFollowUp = messages.some((msg) => msg.sender === 'user');
+    const history = messages
+      .filter((msg) => msg.sender === 'user' || msg.sender === 'system')
+      .map((msg) => ({
+        role: msg.sender === 'user' ? 'user' : 'assistant',
+        text: msg.text || '',
+        imageDataUrl: msg.imageDataUrl || null,
+      }));
 
     setMessages((prev) => [...prev, newMsg]);
 
@@ -121,7 +140,13 @@ function ChatScreen({ user }) {
 
     // 2. שליחה ל-AI
     try {
-      const aiResponse = await sendMessageToAI(textToSend, fileToSend, mode);
+      const aiResponse = await sendMessageToAI(
+        textToSend,
+        fileToSend,
+        mode,
+        isFollowUp,
+        history
+      );
 
       const systemMsg = {
         id: Date.now() + 1,

@@ -10,7 +10,13 @@ function fileToDataUrl(file) {
   });
 }
 
-export const sendMessageToAI = async (text, file, mode = "social_upload") => {
+export const sendMessageToAI = async (
+  text,
+  file,
+  mode = "social_upload",
+  followUp = false,
+  history = []
+) => {
   console.log("Sending to backend -> Mode:", mode, "Text:", text, "File:", file);
 
   try {
@@ -28,6 +34,8 @@ export const sendMessageToAI = async (text, file, mode = "social_upload") => {
       text,
       imageDataUrl,
       mode,
+      followUp,
+      history,
     });
 
     return data?.reply ?? "לא התקבלה תשובה מהשרת.";

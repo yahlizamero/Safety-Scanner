@@ -27,7 +27,7 @@ const Home = () => {
 
           <div className={styles.heroCtas}>
             <Link to="/auth" className={styles.primaryBtn}>Sign in</Link>
-            <a href="#about" className={styles.secondaryBtn}>Learn more</a>
+            <a href="#features" className={styles.secondaryBtn}>Learn more</a>
           </div>
 
           <div className={styles.miniStats}>
@@ -65,17 +65,8 @@ const Home = () => {
         </aside>
       </section>
 
-        <section id="about">
-          <h2 className={styles.sectionTitle}>About SafetyScanner</h2>
-          <p className={styles.aboutText}>
-            The goal is simple: help teen girls spot what could reveal too much — before posting. <br />
-            You get clear warnings and quick edits, with a future “public presence” report to help you lock down what’s visible.
-            Change modes for safety education or get help resources if needed.
-          </p>
-        </section>
-
-        {/* FEATURES */}
-      <section className={styles.features}>
+      {/* FEATURES */}
+      <section id="features" className={styles.features}>
         <div className={styles.featureCard}>
           <h3 className={styles.featureTitle}>Photo safety scan</h3>
           <p className={styles.featureText}>

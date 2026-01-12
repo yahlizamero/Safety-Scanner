@@ -15,7 +15,7 @@ function getOpenAIClient() {
 
 export async function safetyCheck(req, res) {
   try {
-    const { text, imageDataUrl, mode } = req.body || {};
+    const { text, imageDataUrl, mode, followUp, history } = req.body || {};
 
     if (!text && !imageDataUrl) {
       return res.status(400).json({ reply: "נא לשלוח טקסט או תמונה לבדיקה." });
@@ -37,15 +37,65 @@ export async function safetyCheck(req, res) {
     }
 
     const selectedMode = mode || "social_upload";
-    const systemPrompt = MODE_PROMPTS[selectedMode] || MODE_PROMPTS.social_upload;
+    let systemPrompt = MODE_PROMPTS[selectedMode] || MODE_PROMPTS.social_upload;
+
+    if (followUp) {
+      systemPrompt += `
+
+הנחיית המשך שיחה:
+- ענה בשפה של המשתמשת ושמור על טון חם, חברי וזורם.
+- זו שאלה המשך, אז תענה בשיחה זורמת וטבעית, בלי מבנה ממוספר קשיח.
+- עדיף 1–2 פסקאות קצרות; אם חייבים, לכל היותר 2 נקודות.
+- בלי "מקורות מומלצים" אלא אם המשתמשת ביקשה.
+- שמור על טון חברי ותומך.
+      `.trim();
+    }
 
     const openai = getOpenAIClient();
+    const input = [
+      { role: "system", content: [{ type: "input_text", text: systemPrompt }] },
+    ];
+
+    const languageHint = (() => {
+      if (!text) return "";
+      // Simple heuristic: presence of Hebrew characters.
+      return /[\u0590-\u05FF]/.test(text)
+        ? "ענה בעברית."
+        : "Answer in English.";
+    })();
+
+    if (Array.isArray(history)) {
+      history.forEach((msg) => {
+        if (!msg || (msg.role !== "user" && msg.role !== "assistant")) return;
+
+        const content = [];
+        if (msg.text) {
+          content.push({
+            type: msg.role === "assistant" ? "output_text" : "input_text",
+            text: msg.text,
+          });
+        }
+        if (msg.role === "user" && msg.imageDataUrl) {
+          content.push({ type: "input_image", image_url: msg.imageDataUrl });
+        }
+        if (content.length > 0) {
+          input.push({ role: msg.role, content });
+        }
+      });
+    }
+
+    if (languageHint) {
+      input.push({
+        role: "system",
+        content: [{ type: "input_text", text: languageHint }],
+      });
+    }
+
+    input.push({ role: "user", content: userContent });
+
     const response = await openai.responses.create({
       model: "gpt-4.1-mini",
-      input: [
-        { role: "system", content: [{ type: "input_text", text: systemPrompt }] },
-        { role: "user", content: userContent },
-      ],
+      input,
     });
 
     return res.json({ reply: response.output_text });
